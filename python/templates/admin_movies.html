@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影库管理 - 电影协会</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #1e3c72;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .add-movie-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            margin-left: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .add-movie-btn:hover {
+            background: #218838;
+        }
+        
+        .movies-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .movie-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+        }
+        
+        .movie-title {
+            color: #1e3c72;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .movie-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-item {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .no-movies {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        /* 添加电影表单样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 电影库管理</h1>
+            <div>
+                <a href="/admin/dashboard" class="back-btn">返回仪表板</a>
+                <a href="/movies" class="add-movie-btn">添加电影</a>
+            </div>
+        </div>
+        
+        <div class="movies-container">
+            {% if movies %}
+                {% for movie in movies %}
+                <div class="movie-card">
+                    <h3 class="movie-title">{{ movie.title }}</h3>
+                    <div class="movie-details">
+                        <div class="detail-item">
+                            <span class="detail-label">导演:</span> {{ movie.director or '未知' }}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">类型:</span> {{ movie.genre or '未知' }}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">年份:</span> {{ movie.release_year or '未知' }}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">国家:</span> {{ movie.country or '未知' }}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">时长:</span> {{ movie.duration or '未知' }}分钟
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">评分:</span> {{ "%.1f"|format(movie.rating) if movie.rating else '暂无' }}
+                        </div>
+                    </div>
+                    {% if movie.description %}
+                    <div style="color: #666; font-size: 0.9em; line-height: 1.4;">
+                        {{ movie.description[:200] }}{% if movie.description|length > 200 %}...{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-movies">
+                    <h3>暂无电影</h3>
+                    <p>点击"添加电影"按钮开始添加电影到库中</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- 添加电影模态框 -->
+    <div id="addMovieModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddMovieModal()">&times;</span>
+            <h2>添加新电影</h2>
+            <form id="addMovieForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">电影名称 *</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="original_title">原名</label>
+                        <input type="text" id="original_title" name="original_title">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="director">导演</label>
+                        <input type="text" id="director" name="director">
+                    </div>
+                    <div class="form-group">
+                        <label for="actors">主演</label>
+                        <input type="text" id="actors" name="actors" placeholder="用逗号分隔">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="genre">类型</label>
+                        <input type="text" id="genre" name="genre">
+                    </div>
+                    <div class="form-group">
+                        <label for="release_year">上映年份</label>
+                        <input type="number" id="release_year" name="release_year" min="1900" max="2030">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="country">国家/地区</label>
+                        <input type="text" id="country" name="country">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">时长（分钟）</label>
+                        <input type="number" id="duration" name="duration" min="1">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rating">评分</label>
+                        <input type="number" id="rating" name="rating" min="0" max="10" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="poster_url">海报链接</label>
+                        <input type="url" id="poster_url" name="poster_url">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="trailer_url">预告片链接</label>
+                    <input type="url" id="trailer_url" name="trailer_url">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">简介</label>
+                    <textarea id="description" name="description" placeholder="请输入电影简介..."></textarea>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">添加电影</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddMovieModal()">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function openAddMovieModal() {
+            document.getElementById('addMovieModal').style.display = 'block';
+        }
+        
+        function closeAddMovieModal() {
+            document.getElementById('addMovieModal').style.display = 'none';
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            var modal = document.getElementById('addMovieModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // 提交添加电影表单
+        document.getElementById('addMovieForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const movieData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (value) {
+                    if (['release_year', 'duration', 'rating'].includes(key)) {
+                        movieData[key] = parseInt(value) || parseFloat(value);
+                    } else {
+                        movieData[key] = value;
+                    }
+                }
+            }
+            
+            fetch('/admin/add_movie', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(movieData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.msg);
+                if (data.msg.includes('成功')) {
+                    closeAddMovieModal();
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('添加失败，请重试');
+            });
+        });
+    </script>
+</body>
+</html> 

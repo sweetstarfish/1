@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>电影库 - 电影协会</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+    .navbar .brand {
+      font-size: 1.5em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-right: 32px;
+      color: #ffd700;
+    }
+    .navbar .nav {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+    }
+    .navbar .nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1em;
+      transition: color 0.2s;
+    }
+    .navbar .nav a:hover {
+      color: #ffd700;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .section {
+      background: white;
+      border-radius: 10px;
+      padding: 40px;
+      margin: 40px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 { 
+      color: #1e3c72; 
+      border-left: 4px solid #ffd700; 
+      padding-left: 15px; 
+      margin-bottom: 30px; 
+    }
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+      margin: 30px 0;
+    }
+    .movie-card {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    .movie-card:hover {
+      transform: translateY(-5px);
+    }
+    .movie-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #1e3c72;
+    }
+    .movie-meta {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+    .movie-rating {
+      color: #ffd700;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .no-movies {
+      text-align: center;
+      color: #666;
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="brand">🎬 电影协会</span>
+    <nav class="nav">
+      <a href="/">首页</a>
+      <a href="/movies">电影库</a>
+      <a href="/movie/events">活动安排</a>
+      <a href="/public/news">协会资讯</a>
+      <a href="/apply">会员申请</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div style="margin-bottom:18px;">
+            {% for message in messages %}
+              <div style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 6px; padding: 12px 18px; font-size: 1.1em; margin-bottom: 6px; box-shadow: 0 2px 8px #e0f7e9; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size:1.3em;">✔️</span> {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <h1>🎬 电影库</h1>
+      {% if session.get('user_id') and user and user.role == 'admin' %}
+      <form method="post" action="/movies" style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; align-items: end; background: #f8f9fa; border-radius: 8px; padding: 18px 18px 8px 18px; box-shadow: 0 2px 8px #f0f1f3;">
+        <input type="text" name="title" placeholder="电影名称*" required style="flex:1; min-width:120px;">
+        <input type="text" name="director" placeholder="导演" style="flex:1; min-width:100px;">
+        <input type="text" name="genre" placeholder="类型" style="flex:1; min-width:100px;">
+        <input type="number" name="release_year" placeholder="年份" style="width:90px;">
+        <button type="submit" class="submit-btn">添加电影</button>
+      </form>
+      {% endif %}
+      
+      {% if movies %}
+      <div class="movie-grid">
+        {% for movie in movies.items %}
+        <div class="movie-card">
+          <div class="movie-title">{{ movie.title }}</div>
+          <div class="movie-meta">
+            <div>导演：{{ movie.director or '未知' }}</div>
+            <div>类型：{{ movie.genre or '未知' }}</div>
+            <div>年份：{{ movie.release_year or '未知' }}</div>
+          </div>
+          <div class="movie-rating">⭐ {{ movie.rating or '暂无评分' }}</div>
+          {% if session.get('user_id') and user and user.role == 'admin' %}
+          <form method="post" action="/movie/delete_movie/{{ movie.id }}" style="margin-top:10px;">
+            <button type="submit" style="background:#dc3545;color:white;border:none;padding:6px 16px;border-radius:5px;cursor:pointer;font-size:0.95em;">删除</button>
+          </form>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="no-movies">
+        <h3>暂无电影数据</h3>
+        <p>请稍后再来查看</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html> 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会员申请 - 电影协会</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+    .navbar .brand {
+      font-size: 1.5em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-right: 32px;
+      color: #ffd700;
+    }
+    .navbar .nav {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+    }
+    .navbar .nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1em;
+      transition: color 0.2s;
+    }
+    .navbar .nav a:hover {
+      color: #ffd700;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .form-section {
+      background: white;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 { 
+      color: #1e3c72; 
+      border-left: 4px solid #ffd700; 
+      padding-left: 15px; 
+      margin-bottom: 30px; 
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #1e3c72;
+      font-weight: bold;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    .submit-btn {
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      color: #1e3c72;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    }
+    .message {
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="brand">🎬 电影协会</span>
+    <nav class="nav">
+      <a href="/">首页</a>
+      <a href="/movies">电影库</a>
+      <a href="/movie/events">活动安排</a>
+      <a href="/public/news">协会资讯</a>
+      <a href="/apply">会员申请</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <div class="form-section">
+      <h1>🎬 电影协会会员申请</h1>
+      
+    {% if msg %}
+      <div class="message {% if '成功' in msg or '提交' in msg %}success{% else %}error{% endif %}">
+        {{ msg }}
+      </div>
+    {% endif %}
+
+      <form method="POST">
+        <div class="form-group">
+          <label for="username">用户名 *</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="realname">真实姓名</label>
+          <input type="text" id="realname" name="realname">
+        </div>
+
+        <div class="form-group">
+          <label for="favorite_movies">喜欢的电影</label>
+          <input type="text" id="favorite_movies" name="favorite_movies" placeholder="例如：肖申克的救赎、教父、盗梦空间">
+        </div>
+
+        <div class="form-group">
+          <label for="movie_experience">电影相关经历</label>
+          <textarea id="movie_experience" name="movie_experience" placeholder="请分享您的观影经历、对电影的理解或相关经验..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="reason">申请理由 *</label>
+          <textarea id="reason" name="reason" required placeholder="请详细说明您为什么想加入电影协会..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">提交申请</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html> 

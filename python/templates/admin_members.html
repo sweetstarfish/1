@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会员管理 - 电影协会</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>👥 会员管理</h1>
+            <a href="/admin/dashboard" class="back-btn">返回仪表板</a>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_members }}</div>
+                <div class="stat-label">总会员数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ admin_count }}</div>
+                <div class="stat-label">管理员</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ member_count }}</div>
+                <div class="stat-label">普通会员</div>
+            </div>
+        </div>
+        
+        <div class="admin-table">
+            <div class="table-header">
+                <h2>会员列表</h2>
+            </div>
+            
+            {% if members %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>昵称</th>
+                        <th>角色</th>
+                        <th>标签</th>
+                        <th>加入时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td>{{ member.id }}</td>
+                        <td>{{ member.username }}</td>
+                        <td>{{ member.nickname or '-' }}</td>
+                        <td>
+                            <span class="role-badge role-{{ member.role }}">
+                                {% if member.role == 'admin' %}管理员{% else %}会员{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ member.tags or '-' }}</td>
+                        <td>{{ member.join_date.strftime('%Y-%m-%d %H:%M') if member.join_date else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <h3>暂无会员数据</h3>
+                <p>还没有会员加入协会</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 

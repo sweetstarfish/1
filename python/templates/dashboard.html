@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>会员空间 - 电影协会</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+  <div class="navbar">
+    <span class="brand">🎬 电影协会</span>
+    <nav class="nav">
+      <a href="/">首页</a>
+      <a href="/movies">电影库</a>
+      <a href="/movie/events">活动安排</a>
+      <a href="/public/news">协会资讯</a>
+      <a href="/apply">会员申请</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <!-- Flash消息显示 -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="section">
+            <div class="flash-message">
+              {{ message }}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="section">
+      <h1>🎬 会员空间</h1>
+      <p>欢迎回来，{{ user.nickname or user.username }}！</p>
+    </div>
+
+    <div class="section">
+      <h2>个人资料修改</h2>
+    <form method="post" action="/user/profile/update">
+        <div class="form-group">
+          <label>昵称：</label>
+          <input type="text" name="nickname" value="{{ user.nickname or '' }}">
+        </div>
+        <div class="form-group">
+          <label>标签：</label>
+          <input type="text" name="tags" value="{{ user.tags or '' }}" placeholder="例如：科幻迷、经典电影爱好者">
+        </div>
+        <button type="submit" class="submit-btn">更新资料</button>
+    </form>
+    </div>
+    
+    <div class="section">
+      <h2>好友管理</h2>
+      <div class="friend-section">
+        <form method="post" action="/user/friend/add" class="friend-form">
+          <div class="form-group">
+            <label>添加好友：</label>
+            <input type="text" name="friend_name" placeholder="输入好友用户名" required>
+          </div>
+          <button type="submit" class="submit-btn">添加好友</button>
+    </form>
+        
+        <div class="user-search">
+          <h3>搜索用户</h3>
+          <input type="text" id="searchInput" placeholder="输入用户名或昵称搜索...">
+          <div id="userList"></div>
+        </div>
+        
+        <h3>我的好友列表</h3>
+        <ul class="friend-list">
+      {% for f in friends %}
+        <li>
+          <a class="friend-link" href="/friend_space/{{ f.id }}">{{ f.nickname or f.username }}</a>
+              <form method="post" action="/user/friend/remove" style="display:inline;">
+              <input type="hidden" name="friend_id" value="{{ f.id }}">
+                  <button type="submit" class="remove-btn">删除</button>
+          </form>
+        </li>
+      {% else %}
+            <li style="color: #666; font-style: italic;">暂无好友，快去添加吧！</li>
+      {% endfor %}
+    </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>发布新日志</h2>
+    <form method="post" action="/user/log/post_form">
+        <div class="form-group">
+          <label>分享你的观影心得：</label>
+          <textarea name="content" placeholder="记录今天的心情或观影感受..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">发布</button>
+    </form>
+    </div>
+
+    <div class="section">
+      <h2>我的日志</h2>
+      <ul class="log-list">
+      {% for l in logs %}
+        <li>{{ l.content }} <span style="color:#888;">({{ l.created_at.strftime('%Y-%m-%d') }})</span></li>
+      {% else %}
+        <li>暂无日志</li>
+      {% endfor %}
+    </ul>
+    </div>
+
+    <div class="section">
+      <h2>我的收藏</h2>
+      <ul class="collection-list">
+      {% for news in collected_news %}
+        <li><a href="/public/news/{{ news.id }}">{{ news.title }}</a></li>
+      {% else %}
+        <li>暂无收藏</li>
+      {% endfor %}
+    </ul>
+    </div>
+
+    <div class="section">
+      <h2>上传照片</h2>
+    <form method="post" action="/user/upload_photo" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>选择照片：</label>
+      <input type="file" name="file" required>
+        </div>
+        <div class="form-group">
+          <label>比赛名称（可选）：</label>
+          <input type="text" name="contest" placeholder="比赛名">
+        </div>
+        <button type="submit" class="submit-btn">上传</button>
+    </form>
+    </div>
+
+    {% if photos %}
+    <div class="section">
+      <h2>我的照片</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 18px;">
+        {% for p in photos %}
+        <div style="background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 8px #f0f1f3; padding: 12px 12px 8px 12px; width: 160px; text-align: center;">
+          <img src="/static/uploads/{{ p.contest }}/{{ p.filename }}" alt="{{ p.realname }}" style="width: 130px; height: 130px; object-fit: cover; border-radius: 6px; background: #e0e7ef; margin-bottom: 8px;">
+          <div style="font-size: 13px; color: #333; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p.realname }}</div>
+          <div style="font-size: 12px; color: #888;">{{ p.uploaded_at.strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="section" style="text-align: center;">
+      <a href="/user/logout" class="logout-btn">退出登录</a>
+    </div>
+  </div>
+  
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html> 

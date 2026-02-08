@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>好友空间</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(120deg, #f6f8fa 60%, #e3eafc 100%); }
+    .container { max-width: 700px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 4px 24px #e0e0e0; padding: 36px 40px 32px 40px; }
+    .back { color: #409EFF; text-decoration: none; font-size: 15px; }
+    .back:hover { text-decoration: underline; }
+    .profile-card {
+      background: #f3f7fb;
+      border-radius: 10px;
+      padding: 22px 32px 18px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px #f0f1f3;
+    }
+    .profile-info h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.5em;
+      color: #222;
+      letter-spacing: 1px;
+    }
+    .profile-info .nickname {
+      color: #409EFF;
+      font-weight: bold;
+      margin-bottom: 4px;
+      display: inline-block;
+      font-size: 1.1em;
+    }
+    .profile-info .tags {
+      color: #888;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+    .logs-section {
+      margin-top: 18px;
+    }
+    .logs-section h3 {
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .log-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .log-item {
+      background: #f8fafc;
+      border-radius: 7px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      box-shadow: 0 1px 4px #f1f1f1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+    }
+    .log-date {
+      color: #a0aec0;
+      font-size: 13px;
+      margin-left: 16px;
+      white-space: nowrap;
+    }
+    .empty-log {
+      color: #bbb;
+      text-align: center;
+      margin: 30px 0 10px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="/dashboard">← 返回会员空间</a>
+    <div class="profile-card">
+      <div class="profile-info">
+        <h2>{{ friend.username }}</h2>
+        {% if friend.nickname %}
+          <div class="nickname">昵称：{{ friend.nickname }}</div>
+        {% endif %}
+        {% if friend.tags %}
+          <div class="tags">标签：{{ friend.tags }}</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="logs-section">
+      <h3>公开日志</h3>
+      <ul class="log-list">
+        {% for l in logs %}
+          <li class="log-item">
+            <span>{{ l.content }}</span>
+            <span class="log-date">{{ l.created_at.strftime('%Y-%m-%d') }}</span>
+          </li>
+        {% else %}
+          <div class="empty-log">暂无日志</div>
+        {% endfor %}
+      </ul>
+    </div>
+    <a class="back" href="/">返回首页</a>
+  </div>
+</body>
+</html> 

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>电影协会 - 首页</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+    .navbar .brand {
+      font-size: 1.5em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-right: 32px;
+      color: #ffd700;
+    }
+    .navbar .nav {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+    }
+    .navbar .nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1em;
+      transition: color 0.2s;
+    }
+    .navbar .nav a:hover {
+      color: #ffd700;
+    }
+    .user-menu {
+      margin-left: auto;
+      height: 56px;
+      display: flex;
+      align-items: center;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .username {
+      color: #fff;
+      cursor: pointer;
+      padding: 0 12px;
+      font-weight: 500;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background: #fff;
+      min-width: 120px;
+      box-shadow: 0 2px 8px #e0e0e0;
+      z-index: 1;
+      border-radius: 4px;
+    }
+    .dropdown-content a {
+      color: #222;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    .dropdown-content a:hover {
+      background: #f5f7fa;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    .hero h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .hero p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .section {
+      background: white;
+      border-radius: 10px;
+      padding: 40px;
+      margin: 40px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h2 { 
+      color: #1e3c72; 
+      border-left: 4px solid #ffd700; 
+      padding-left: 15px; 
+      margin-bottom: 20px; 
+    }
+    .entry-btns {
+      text-align: center;
+    }
+    .entry-btns a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 30px;
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      color: #1e3c72;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+    .entry-btns a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2em; }
+      .container { padding: 0 10px; }
+      .navbar { flex-direction: column; height: auto; padding: 10px 0; }
+      .navbar .nav { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="brand">🎬 电影协会</span>
+    <nav class="nav">
+      <a href="/">首页</a>
+      <a href="/movie/movies">电影库</a>
+      <a href="/movie/events">活动安排</a>
+      <a href="/public/news">协会资讯</a>
+      <a href="/apply">会员申请</a>
+    </nav>
+    <div class="user-menu">
+      {% if session.get('user_id') %}
+      <div class="dropdown">
+        <span class="username">{{ session.get('username', '会员') }} ▼</span>
+        <div class="dropdown-content">
+          <a href="/dashboard">会员空间</a>
+          <a href="/user/profile">个人资料</a>
+          <a href="/user/logout">退出登录</a>
+        </div>
+      </div>
+      {% else %}
+        <a href="/login">登录</a>
+        <a href="/register">注册</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <h1>欢迎来到电影协会</h1>
+      <p>探索电影的无限魅力，与志同道合的影迷一起分享观影体验</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <h2>协会简介</h2>
+      <p>电影协会致力于为会员提供丰富的电影文化体验，包括经典电影放映、影评交流、电影讲座等活动。我们希望通过电影艺术促进同学间的文化交流与思想碰撞。</p>
+    </div>
+    <div class="section">
+      <h2>协会活动</h2>
+      <ul>
+        <li>🎬 经典电影放映：《肖申克的救赎》- 2024-12-15 19:00 - 学生活动中心</li>
+        <li>💬 电影讨论会：《现代电影艺术的发展趋势》- 2024-12-20 14:00 - 图书馆报告厅</li>
+        <li>🎭 新片观影：《奥本海默》- 2024-12-25 20:00 - 电影院</li>
+      </ul>
+    </div>
+    <div class="section entry-btns">
+      <a href="/login">会员登录</a>
+      <a href="/register">会员注册</a>
+      <a href="/movie/movies">浏览电影库</a>
+      <a href="/movie/events">查看活动</a>
+      {% if session.get('user_id') %}
+        <a href="/dashboard">进入会员空间</a>
+      {% endif %}
+    </div>
+    <div class="section">
+      <h2>联系我们</h2>
+      <p>📧 邮箱：movieclub@university.edu.cn<br>
+      📍 地址：学生活动中心三楼电影协会办公室<br>
+      📱 微信：MovieClub2024</p>
+    </div>
+  </div>
+</body>
+</html> 

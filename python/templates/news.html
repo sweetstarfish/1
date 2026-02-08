@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>协会资讯 - 电影协会</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+    .navbar .brand {
+      font-size: 1.5em;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-right: 32px;
+      color: #ffd700;
+    }
+    .navbar .nav {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+    }
+    .navbar .nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1em;
+      transition: color 0.2s;
+    }
+    .navbar .nav a:hover {
+      color: #ffd700;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .section {
+      background: white;
+      border-radius: 10px;
+      padding: 40px;
+      margin: 40px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 { 
+      color: #1e3c72; 
+      border-left: 4px solid #ffd700; 
+      padding-left: 15px; 
+      margin-bottom: 30px; 
+    }
+    .news-list {
+      list-style: none;
+      padding: 0;
+    }
+    .news-item {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border-left: 4px solid #ffd700;
+      transition: transform 0.3s;
+    }
+    .news-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .news-title {
+      font-size: 1.3em;
+      color: #1e3c72;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .news-date {
+      color: #666;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+    .news-content {
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .news-category {
+      display: inline-block;
+      padding: 4px 8px;
+      background: #ffd700;
+      color: #1e3c72;
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .collect-btn {
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      color: #1e3c72;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .collect-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+    }
+    .no-news {
+      text-align: center;
+      color: #666;
+      padding: 40px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <span class="brand">🎬 电影协会</span>
+    <nav class="nav">
+      <a href="/">首页</a>
+      <a href="/movies">电影库</a>
+      <a href="/movie/events">活动安排</a>
+      <a href="/public/news">协会资讯</a>
+      <a href="/apply">会员申请</a>
+    </nav>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <h1>📰 协会资讯</h1>
+      
+    <ul class="news-list">
+      {% for n in news %}
+      <li class="news-item">
+          {% if n.category %}
+          <div class="news-category">
+            {% if n.category == 'announcement' %}📢 公告
+            {% elif n.category == 'review' %}🎬 影评
+            {% elif n.category == 'industry_news' %}📰 行业资讯
+            {% else %}{{ n.category }}{% endif %}
+          </div>
+          {% endif %}
+        <div class="news-title">{{ n.title }}</div>
+          <div class="news-date">📅 {{ n.created_at.strftime('%Y-%m-%d %H:%M') if n.created_at else '' }}</div>
+        <div class="news-content">{{ n.content[:200] }}{% if n.content|length > 200 %}...{% endif %}</div>
+        {% if session.get('user_id') %}
+          <form method="post" action="/user/collect/news/{{ n.id }}" style="display:inline;">
+              <button type="submit" class="collect-btn">⭐ 收藏</button>
+        </form>
+        {% endif %}
+      </li>
+      {% else %}
+        <li class="no-news">
+          <h3>暂无资讯</h3>
+          <p>请稍后再来查看最新动态</p>
+        </li>
+      {% endfor %}
+    </ul>
+    </div>
+  </div>
+</body>
+</html> 

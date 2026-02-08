@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员仪表板 - 电影协会</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <a href="/user/logout" class="logout-btn">退出登录</a>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1>🎬 电影协会管理员仪表板</h1>
+            <p>欢迎回来，{{ user.nickname or user.username }}！</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ pending_applications }}</div>
+                <div class="stat-label">待审核申请</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_users }}</div>
+                <div class="stat-label">总会员数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_movies }}</div>
+                <div class="stat-label">电影库数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_events }}</div>
+                <div class="stat-label">活动数量</div>
+            </div>
+        </div>
+        
+        <div class="admin-menu">
+            <h2>📋 管理功能</h2>
+            <div class="menu-grid">
+                <a href="/admin/applications" class="menu-item">
+                    <h3>📝 入会申请审核</h3>
+                    <p>查看和审核新会员申请</p>
+                </a>
+                <a href="/admin/movies" class="menu-item">
+                    <h3>🎬 电影库管理</h3>
+                    <p>添加和管理电影信息</p>
+                </a>
+                <a href="/admin/events" class="menu-item">
+                    <h3>📅 活动管理</h3>
+                    <p>创建和管理协会活动</p>
+                </a>
+                <a href="/admin/members" class="menu-item">
+                    <h3>👥 会员管理</h3>
+                    <p>查看和管理会员信息</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
